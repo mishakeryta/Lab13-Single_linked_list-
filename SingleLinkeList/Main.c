@@ -10,7 +10,7 @@ int main(void) {
 	BookInfo book = { 0 };
 	Node* listOfBooks = NULL;
 	FILE* inptr = fopen("Books.txt", "r");
-	while (strlen((book = FReadBookInfo(inptr)).author)) {
+	while (strlen((book = ReadBookInfo(inptr)).author)) {
 		InsetNewInOrder(&listOfBooks, book);
 	}
 	PrintListBooks(listOfBooks);

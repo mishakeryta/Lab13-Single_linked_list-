@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "BookList.h"
-
 //function thet read data
 BookInfo ReadBookInfo() {
 	BookInfo  data = { 0 };
@@ -18,33 +17,12 @@ BookInfo ReadBookInfo() {
 	scanf("%i %i %lf", &data.year, &data.pages, &data.price);
 	return data;
 }
-BookInfo FReadBookInfo(FILE* fStream) {
-	BookInfo data = { 0 };
-	do {
-		if (fgets(data.author, SIZE_NAMES, fStream) == NULL) {
-			break;
-		}
-		data.author[strlen(data.author) - 1] = 0;
-		if (fgets(data.name, SIZE_NAMES, fStream) == NULL) {
-			break;
-		}
-		data.name[strlen(data.name) - 1] = 0;
-		char szTmp[10] = { 0 };
-		if (fgets(szTmp, 10, fStream) == NULL) {
-			break;
-		}
-		data.year = atoi(szTmp);
+int FReadBookInfo(BookInfo* info,FILE* fStream) {
+	if (!info || !fStream) return 0;
+	char buffer[BUFFER_SIZE] = { 0 };
+	fgets(buffer, BUFFER_SIZE - 1, fStream);
 
-		if (fgets(szTmp, 10, fStream) == NULL) {
-			break;
-		}
-		data.pages = atoi(szTmp);
-		if (fgets(szTmp, 10, fStream) == NULL) {
-			break;
-		}
-		data.price = atof(szTmp);
-	} while (0);
-	return data;
+
 }
 
 Node* CreateNew(BookInfo data) {
@@ -96,7 +74,7 @@ int DeleteLess50Pages(Node **booksNode)
 		*booksNode = (*booksNode)->next;
 		free(tmp);
 	}
-	Node *bookCrawler = (*booksNode) ? (*booksNode)->next:(*booksNode);
+	Node *bookCrawler = (*booksNode) ? (*booksNode)->next : (*booksNode);
 	while (bookCrawler) {
 		if (bookCrawler->info.pages <= 50) {
 			tmp->next = bookCrawler->next;
@@ -118,7 +96,7 @@ int CountNodes(const Node* list) {
 	return count;
 }
 //create array with top 5 latest books in list 
-BookInfo* FindTop5Latest(const Node* list){
+BookInfo* FindTop5Latest(const Node* list) {
 	if (!list) return NULL;
 	int countOfElements = CountNodes(list);
 	if (countOfElements < 5)return NULL;
@@ -146,12 +124,11 @@ BookInfo* FindTop5Latest(const Node* list){
 	return top5Latest;
 }
 //...
-void DeleteList(Node **list){
+void DeleteList(Node **list) {
 	Node* tmp = NULL;
-	while (*list){
+	while (*list) {
 		tmp = *list;
 		*list = (*list)->next;
 		free(tmp);
 	}
-	*list = NULL;
 }

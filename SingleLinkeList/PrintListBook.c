@@ -2,7 +2,6 @@
 #include <stdarg.h>
 #include "BookList.h"
 #include "PrintListBook.h"
-
 static void PrintRows(int iNum1, ...){
 	putchar('+');
 	va_list list;
@@ -57,4 +56,3 @@ void PrintArrayBook(const BookInfo* arrBooksInfo, int num) {
 		PrintRows(5, 27, 25, 6, 5, 6);
 	}
 }
-

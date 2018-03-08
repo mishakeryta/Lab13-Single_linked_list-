@@ -18,7 +18,10 @@ typedef struct SNode
 }Node;
 
 BookInfo ReadBookInfo();
-BookInfo FReadBookInfo(FILE* fStrem);
+
+//number of chars in one line of fStream
+#define BUFFER_SIZE 1000
+int FReadBookInfo(BookInfo* info,FILE* fStrem);
 Node* CreateNew(BookInfo data);
 int InsetNewInOrder(Node** list, BookInfo data);
 int DeleteLess50Pages(Node** list);
