@@ -11,11 +11,15 @@ int main(void) {
 	Node* listOfBooks = NULL;
 	FILE* inptr = fopen("Books.txt", "r");
 	int noEnd = 0;
-	char der[10];
+	int indexRowOfFile = 1;
 	while(noEnd = FReadBookInfo(&book, inptr)) {
 		if (noEnd == 1) {
 			InsertNewInOrder(&listOfBooks, book);
 		}
+		if (noEnd == -1){
+			printf("Data on  row  %i has inappropriate format\n", indexRowOfFile);
+		}
+		++indexRowOfFile;
 	};
 	PrintListBooks(listOfBooks);
 	//DeleteLess50Pages(&listOfBooks);

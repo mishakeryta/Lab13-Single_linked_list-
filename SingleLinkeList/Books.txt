@@ -1,5 +1,5 @@
-        James   -          Adam|Destroyer|2005|200|22.44
-Aill     Sitr|Mad|1700|100|23.77
+  James - Adam|Destroyer|2005|200|22.44
+Aill    Sitr|Mad|1700|100|23.77
 Boy      Joy|Forever|2000|220|22.00
 Adam    Nod|Hill|1989|230|22.30
 Mik   Ted|Steal|1956|222|18.25
@@ -12,5 +12,6 @@ Moor        Joe|C programing|1988|795|56.99
 Miki Maous|Star Wars|1994|345|23.90
 Wear Sam|Dante|1890|123|50.50
 Res Tic|Sorry|1900|49|23.20
-Rick Bavis|Day of...|1784|30|23.99
+Rick Bavis|Day of|1784|30|23.99
 Dan William|Record|1973|23|900.00
+...

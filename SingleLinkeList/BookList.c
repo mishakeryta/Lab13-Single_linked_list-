@@ -14,9 +14,10 @@ inline int IsAuthorChar(int chr) {
 inline int IsNameBookChar(int chr) {
 	return  IsAuthorChar(chr) || isdigit(chr);
 }
-inline int IsDigitOrBlankChar(int chr) {
-	return isdigit(chr) || isblank(chr);
+inline int IsFloatDiginChar(int chr) {
+	return isdigit(chr) || chr == '.';
 }
+
 int DeleteAll(char chr, char*str) {
 	if (!str) return 0;
 	for (int i = 0, length = strlen(str); i < length; ++i) {
@@ -58,7 +59,7 @@ int FormatAuthor(char* name) {
 			blankZoneHaveDash = 0;
 		}
 	}
-	if(!DeleteAll('+', name)) return 0;
+	if (!DeleteAll('+', name)) return 0;
 	return 1;
 }
 
@@ -78,6 +79,17 @@ int GetStrTo(char* dest, int sizeOfDest, char endOfSource, int(*check)(int), cha
 	return 0;
 }
 
+//Функція яка провіряє рядок на наявність двох ком, або більше 2 цифер після коми
+int CheckPriceFormatIsTrue(char* price) {
+	if (!price) return 0;
+	int numDot = 0;
+	for (int i = 0, length = strlen(price); i < length; ++i) {
+		if (price[i] == '.') ++numDot;
+		if (!(isdigit(price[i]) || price[i] == '.') || numDot >= 2) return 0;
+	}
+	return 1;
+}
+
 //фенкція ,яка зчитує дані з клавіатури
 BookInfo ReadBookInfo() {
 	BookInfo  data = { 0 };
@@ -91,20 +103,36 @@ BookInfo ReadBookInfo() {
 	scanf("%i %i %lf", &data.year, &data.pages, &data.price);
 	return data;
 }
+//функція,яка зчитує дані з потуку(будьякого, навіть стандартного) 
 int FReadBookInfo(BookInfo* info, FILE* inptr) {
 	if (!info || !inptr) return 0;
 	char buffer[BUFFER_SIZE] = { 0 };
 	if (!fgets(buffer, BUFFER_SIZE - 1, inptr)) return 0;
+
 	int indexOfBuffer = 0;
 	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', IsAuthorChar, buffer))) return -1;
 	++indexOfBuffer;
 	if (!FormatAuthor(info->author)) return -1;
+
 	int indexLocalBuffer = 0;
 	if (!(indexLocalBuffer = GetStrTo(info->name, SIZE_NAMES, '|', IsNameBookChar, buffer + indexOfBuffer))) return -1;
 	indexOfBuffer += indexLocalBuffer + 1;
-	char tmpForDigit[20] = { 0 };
-	DeleteAll(' ', buffer+indexLocalBuffer);
-	if (!(indexOfBuffer = GetStrTo(tmpForDigit, 11, '|', IsDigitOrBlankChar, buffer + indexOfBuffer + 1))) return -1;
+
+	char tmpForDigits[12] = { 0 };
+	DeleteAll(' ', buffer + indexOfBuffer);
+	if (!(indexLocalBuffer = GetStrTo(tmpForDigits, 12, '|', isdigit, buffer + indexOfBuffer))) return -1;
+	indexOfBuffer += indexLocalBuffer + 1;
+	info->year = atoi(tmpForDigits);
+
+	if (!(indexLocalBuffer = GetStrTo(tmpForDigits, 12, '|', isdigit, buffer + indexOfBuffer))) return -1;
+	indexOfBuffer += indexLocalBuffer + 1;
+	info->pages = atoi(tmpForDigits);
+	if (info->pages <= 0) return -1;
+
+	if (!(indexLocalBuffer = GetStrTo(tmpForDigits, 12, '\n', IsFloatDiginChar, buffer + indexOfBuffer))) return -1;
+	if (!CheckPriceFormatIsTrue(tmpForDigits)) return -1;
+	info->price = atof(tmpForDigits);
+
 	return 1;
 }
 
