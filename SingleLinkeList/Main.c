@@ -10,16 +10,19 @@ int main(void) {
 	BookInfo book = { 0 };
 	Node* listOfBooks = NULL;
 	FILE* inptr = fopen("Books.txt", "r");
-	while (strlen((book = ReadBookInfo(inptr)).author)) {
-		InsetNewInOrder(&listOfBooks, book);
-	}
+	int noEnd = 0;
+	while(noEnd = FReadBookInfo(&book, inptr)) {
+		if (noEnd == 1) {
+			InsertNewInOrder(&listOfBooks, book);
+		}
+	};
 	PrintListBooks(listOfBooks);
-	DeleteLess50Pages(&listOfBooks);
-	PrintListBooks(listOfBooks);
-	BookInfo* top5LatesBooks = FindTop5Latest(listOfBooks);
-	PrintArrayBook(top5LatesBooks, 5);
+	//DeleteLess50Pages(&listOfBooks);
+	//PrintListBooks(listOfBooks);
+	//BookInfo* top5LatesBooks = FindTop5Latest(listOfBooks);
+	//PrintArrayBook(top5LatesBooks, 5);
 	DeleteList(&listOfBooks);
-	free(top5LatesBooks);
+	//free(top5LatesBooks);
 	getchar(); getchar();
 	return 0;
 }

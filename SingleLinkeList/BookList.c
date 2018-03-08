@@ -2,9 +2,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "BookList.h"
-//function thet read data
+/*Функція яка копіює всі символи, доки не знайде символ endOfSource
+*повертає 1 якщо вона знайшла символ, і у str вмстачило розміру
+*check функція ,яка є умовою проходу символу*/
+int NameChars(int chr) {
+	return isalpha(chr) || isblank(chr) || chr == '-';
+}
+int deleteAll(char chr, char*str) {
+	if (!str) return 0;
+	for (int i = 0, length = strlen(str); i < length; ++i) {
+		if (str[i] == chr) {
+			int start = i;
+			do
+			{
+				++i;
+			} while (str[i] == chr);
+			strcpy(str + start, str + i);
+		}
+	}
+	return 1;
+}
+int FormatName(char* name) {
+	int wasAlpha = 0;
+	int blankZoneHaveDash = 0;
+	if (isalpha(name[0])) wasAlpha = 1;
+	if (name[0] == '-') return 0;
+	if (name[0] == ' ') name[0] = '+';
+
+	for (int i = 1, length = strlen(name); i < length; ++i) {
+		if (name[i] == '-') {
+			if (!wasAlpha || blankZoneHaveDash) { return 0; }
+			else {
+				blankZoneHaveDash = 1;
+			}
+			if (name[i - 1] == ' ') {
+				name[i - 1] = '+';
+			}
+		}
+		if (isblank(name[i])) {
+			if (name[i - 1] == ' ' || name[i - 1] == '+') {
+				name[i] = '+';
+			}
+		}
+		if (isalpha(name[i])) {
+			wasAlpha = 1;
+			blankZoneHaveDash = 0;
+		}
+	}
+	deleteAll('+', name);
+	return 1;
+}
+
+/*Функція яка копіює всі символи, доки не знайде символ endOfSource
+*повертає 1 якщо вона знайшла символ, і у str вмстачило розміру
+*check функція ,яка є умовою проходу символу*/
+int GetStrTo(char* dest, int sizeOfDest, char endOfSource, int(*check)(int), char* source) {
+
+	for (int i = 0; i < sizeOfDest; ++i) {
+
+		if (source[i] == endOfSource) {
+			dest[i] = 0;
+			return i;
+		}
+		if (!check(source[i])) return 0;
+		dest[i] = source[i];
+	}
+	return 0;
+}
+
+//фенкція ,яка зчитує дані з клавіатури
 BookInfo ReadBookInfo() {
 	BookInfo  data = { 0 };
 	printf("Enter name of author:");
@@ -17,12 +86,14 @@ BookInfo ReadBookInfo() {
 	scanf("%i %i %lf", &data.year, &data.pages, &data.price);
 	return data;
 }
-int FReadBookInfo(BookInfo* info,FILE* fStream) {
-	if (!info || !fStream) return 0;
+int FReadBookInfo(BookInfo* info, FILE* inptr) {
+	if (!info || !inptr) return 0;
 	char buffer[BUFFER_SIZE] = { 0 };
-	fgets(buffer, BUFFER_SIZE - 1, fStream);
-
-
+	if (!fgets(buffer, BUFFER_SIZE - 1, inptr)) return 0;
+	int indexOfBuffer = 0;
+	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', NameChars, buffer))) return -1;
+	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', NameChars, buffer +indexOfBuffer+1))) return -1;
+	return 1;
 }
 
 Node* CreateNew(BookInfo data) {
@@ -39,7 +110,7 @@ int InsertToBegin(Node** list, Node* node) {
 	return 1;
 }
 //Insert against the alphabet
-int InsetNewInOrder(Node** list, BookInfo data) {
+int InsertNewInOrder(Node** list, BookInfo data) {
 	if (!list) return 0;
 	Node* newNode = CreateNew(data);
 	if (!(*list)) {
