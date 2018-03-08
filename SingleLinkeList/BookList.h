@@ -21,12 +21,15 @@ BookInfo ReadBookInfo();
 
 //number of chars in one line of fStream
 #define BUFFER_SIZE 1000
-int FReadBookInfo(BookInfo* info,FILE* inptr);
+int FReadBookInfo(BookInfo* info, FILE* inptr);
 Node* CreateNew(BookInfo data);
 int InsertNewInOrder(Node** list, BookInfo data);
 int DeleteLess50Pages(Node** list);
 int CountNodes(const Node* list);
 BookInfo* FindTop5Latest(const Node* list);
 void DeleteList(Node** list);
+Node* GetNode(Node* list, int index);
 
+int SortBooks(int(*orderCmp)(const BookInfo*, const BookInfo*), Node** list);
+inline int ByAlphabetAthors(const BookInfo* first, const BookInfo* second);
 #endif

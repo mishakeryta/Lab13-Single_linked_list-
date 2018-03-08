@@ -21,6 +21,7 @@ int main(void) {
 		}
 		++indexRowOfFile;
 	};
+	SortBooks(ByAlphabetAthors, &listOfBooks);
 	PrintListBooks(listOfBooks);
 	//DeleteLess50Pages(&listOfBooks);
 	//PrintListBooks(listOfBooks);
