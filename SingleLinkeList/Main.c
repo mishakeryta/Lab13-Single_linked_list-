@@ -11,6 +11,7 @@ int main(void) {
 	Node* listOfBooks = NULL;
 	FILE* inptr = fopen("Books.txt", "r");
 	int noEnd = 0;
+	char der[10];
 	while(noEnd = FReadBookInfo(&book, inptr)) {
 		if (noEnd == 1) {
 			InsertNewInOrder(&listOfBooks, book);

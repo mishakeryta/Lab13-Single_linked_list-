@@ -1,5 +1,5 @@
         James   -          Adam|Destroyer|2005|200|22.44
-aaaaaaaaaA  aaaaaaaaaaill     Sitr|Mad|1700|100|23.77
+Aill     Sitr|Mad|1700|100|23.77
 Boy      Joy|Forever|2000|220|22.00
 Adam    Nod|Hill|1989|230|22.30
 Mik   Ted|Steal|1956|222|18.25

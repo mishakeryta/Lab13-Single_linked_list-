@@ -8,24 +8,30 @@
 /*Функція яка копіює всі символи, доки не знайде символ endOfSource
 *повертає 1 якщо вона знайшла символ, і у str вмстачило розміру
 *check функція ,яка є умовою проходу символу*/
-int NameChars(int chr) {
+inline int IsAuthorChar(int chr) {
 	return isalpha(chr) || isblank(chr) || chr == '-';
 }
-int deleteAll(char chr, char*str) {
+inline int IsNameBookChar(int chr) {
+	return  IsAuthorChar(chr) || isdigit(chr);
+}
+inline int IsDigitOrBlankChar(int chr) {
+	return isdigit(chr) || isblank(chr);
+}
+int DeleteAll(char chr, char*str) {
 	if (!str) return 0;
 	for (int i = 0, length = strlen(str); i < length; ++i) {
 		if (str[i] == chr) {
 			int start = i;
-			do
-			{
+			do {
 				++i;
 			} while (str[i] == chr);
 			strcpy(str + start, str + i);
+			i = start;
 		}
 	}
 	return 1;
 }
-int FormatName(char* name) {
+int FormatAuthor(char* name) {
 	int wasAlpha = 0;
 	int blankZoneHaveDash = 0;
 	if (isalpha(name[0])) wasAlpha = 1;
@@ -52,7 +58,7 @@ int FormatName(char* name) {
 			blankZoneHaveDash = 0;
 		}
 	}
-	deleteAll('+', name);
+	if(!DeleteAll('+', name)) return 0;
 	return 1;
 }
 
@@ -60,7 +66,6 @@ int FormatName(char* name) {
 *повертає 1 якщо вона знайшла символ, і у str вмстачило розміру
 *check функція ,яка є умовою проходу символу*/
 int GetStrTo(char* dest, int sizeOfDest, char endOfSource, int(*check)(int), char* source) {
-
 	for (int i = 0; i < sizeOfDest; ++i) {
 
 		if (source[i] == endOfSource) {
@@ -91,8 +96,15 @@ int FReadBookInfo(BookInfo* info, FILE* inptr) {
 	char buffer[BUFFER_SIZE] = { 0 };
 	if (!fgets(buffer, BUFFER_SIZE - 1, inptr)) return 0;
 	int indexOfBuffer = 0;
-	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', NameChars, buffer))) return -1;
-	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', NameChars, buffer +indexOfBuffer+1))) return -1;
+	if (!(indexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', IsAuthorChar, buffer))) return -1;
+	++indexOfBuffer;
+	if (!FormatAuthor(info->author)) return -1;
+	int indexLocalBuffer = 0;
+	if (!(indexLocalBuffer = GetStrTo(info->name, SIZE_NAMES, '|', IsNameBookChar, buffer + indexOfBuffer))) return -1;
+	indexOfBuffer += indexLocalBuffer + 1;
+	char tmpForDigit[20] = { 0 };
+	DeleteAll(' ', buffer+indexLocalBuffer);
+	if (!(indexOfBuffer = GetStrTo(tmpForDigit, 11, '|', IsDigitOrBlankChar, buffer + indexOfBuffer + 1))) return -1;
 	return 1;
 }
 
