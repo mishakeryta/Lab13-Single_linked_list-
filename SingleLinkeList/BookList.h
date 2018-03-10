@@ -16,7 +16,7 @@ typedef struct SNode
 //створю новий елемент, у динамічній пам'яті
 Node* CreateNew(BookInfo data);
 //вставляє data ,пред тим створивши елемент списку,у правильне місце(проти алфавіту);
-int InsertNewInOrder(Node** list, BookInfo data);
+int InsertNewInOrder(Node** list, BookInfo info);
 //видаляє всі книши з кількістю сторінок менше 50 
 int DeleteLess50Pages(Node** list);
 //пахує кількість вуздів списку

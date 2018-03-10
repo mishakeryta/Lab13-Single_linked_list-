@@ -29,11 +29,21 @@ int InsertToBegin(Node** list, Node* node) {
 	return 1;
 }
 
+//провіпряє чи така книга уже є в  списку
+int IsBookInList(const Node* list, BookInfo info) {
+	while (list){
+		if (IsBooksEqual(list->info, info)) return 1;
+	}
+	return 0;
+}
+
 //вставляє data ,пред тим створивши елемент списку,у правильне місце(проти алфавіту);
-int InsertNewInOrder(Node** list, BookInfo data) {
+int InsertNewInOrder(Node** list, BookInfo info) {
 	if (!list) return 0;
+	//якщо в списку є такий елемент то повернути -2;
+	if (IsBookInList(*list, info)) return 0;
 	//створює елемент списку
-	Node* newNode = CreateNew(data);
+	Node* newNode = CreateNew(info);
 	//якщо список пустий , або новий елемент стоїть пізніше з алфавітом ніж перший 
 	if (!*list || CmpModeOfSort(&(*list)->info, &newNode->info)) {
 		//вставити на початок списку
@@ -77,7 +87,7 @@ int NotByAlphabetAuthors(const BookInfo* first, const BookInfo* second) {
 int ByAlphabetName(const BookInfo* first, const BookInfo* second) {
 	return (strcmp(first->name, second->name) <= 0) ? 0 : 1;
 }
-int NotByAlphabetName(const BookInfo* first, const BookInfo* second){
+int NotByAlphabetName(const BookInfo* first, const BookInfo* second) {
 	return (strcmp(first->name, second->name) >= 0) ? 0 : 1;
 }
 int ByIncreasingPrice(const BookInfo* first, const BookInfo* second) {
@@ -216,12 +226,16 @@ int InsertNewListFromFile(Node** list, char* path) {
 	int indexRowOfFile = 1;
 	while (noEnd = FReadBookInfo(&book, inptr)) {
 		if (noEnd == 1) {
-			if (!InsertNewInOrder(list, book)) return 0;
+			if ( !InsertNewInOrder(list, book)) return 0;
 		}
 		if (noEnd == -1) {
-			printf("Data on  row  %i has inappropriate format\n", indexRowOfFile);
+			printf("Element on  row  %i has inappropriate format or is allready in the list\n", indexRowOfFile);
+		}
+		if (noEnd == -2) {
+			printf("Element on row %i is in the list\n",indexRowOfFile);
 		}
 		++indexRowOfFile;
+		
 	};
 	fclose(inptr);
 	return 1;

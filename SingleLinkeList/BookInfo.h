@@ -21,11 +21,6 @@ int FReadBookInfo(BookInfo* info, FILE* inptr);
 // функція, яка записує дані, употік, якщо все добре повертає 1,інакше повертає 0
 int FPrintBookInfo(BookInfo info, FILE* outptr);
 
-
-int IsBooksEqual(BookInfo book1, BookInfo book2)
-{
-	if (strcmp(book1.author, book2.author) || strcmp(book1.name,book2.name) ||
-		book1.year != book2.year || book1.pages != book2.pages || book1.price != book2.price) return 0;
-	return 1;
-}
+//якщо книги однакові, вертає 1, інакше 0
+int IsBooksEqual(BookInfo book1, BookInfo book2);
 #endif

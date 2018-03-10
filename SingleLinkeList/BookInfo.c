@@ -145,6 +145,12 @@ int FPrintBookInfo(BookInfo info, FILE* outptr) {
 	fprintf(outptr, "%s|%s|%i|%i|%lf\n", info.author, info.name, info.year, info.pages, info.price);
 	return 1;
 }
+int IsBooksEqual(BookInfo book1, BookInfo book2)
+{
+	if (strcmp(book1.author, book2.author) || strcmp(book1.name, book2.name) ||
+		book1.year != book2.year || book1.pages != book2.pages || book1.price != book2.price) return 0;
+	return 1;
+}
 
 
 

@@ -55,11 +55,12 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 				}
 				break;
 			case -1:printf("Inaropriate fromat\n"); break;
+			case -2:printf("Element is in the list\n"); break;
 			}
 			break;
 		case'2':
 			if (InsertNewListFromFile(&bookList, "Books.txt")) {
-				printf("Creating sucsseful\n");
+				printf("Adding sucsseful\n");
 			}
 			else {
 				printf("Fail\n");
@@ -107,11 +108,14 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 			else {
 				printf("Fail\n");
 			}
-		}
-		break;
+			break;
 		case '7':
 			DeleteList(&bookList);
 			break;
+		case '8':
+			return 0;
+
+		}
 		printf(MAIN_STR);
 	}
 
