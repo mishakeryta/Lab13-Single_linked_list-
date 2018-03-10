@@ -3,32 +3,95 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <conio.h>
 #include "BookList.h"
-#include "PrintListBook.h"
+
+
+#define MAIN_STR "<<BookInfo>>\n\
+Plese eter button:\n\
+1-Add new(format:Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter),\n\
+2-Add from book.txt\n\
+3-Save changes to book.txt\n\
+4-Sort\n\
+5-Show\n\
+6-Find5Latest\n\
+7-Delete list\n\
+8-Exit\n"
+#define SORT_METHODS_STR "Sort book in order(press key):\n\
+1 - by alphabet authors\n\
+2 - against alphabet athors\n\
+3 - by alphabet authors\n\
+4 - against alphabet athors\n\
+5 - by increasing price\n\
+6 - by reducing price\n\
+7 - by increasing year\n\
+8 - by reducing year\n\
+9 - by increasing pages\n\
+0 - by reducing pages\n\
+Any - return|\n"
 
 int main(void) {
-	BookInfo book = { 0 };
-	Node* listOfBooks = NULL;
-	FILE* inptr = fopen("Books.txt", "r");
-	int noEnd = 0;
-	int indexRowOfFile = 1;
-	while(noEnd = FReadBookInfo(&book, inptr)) {
-		if (noEnd == 1) {
-			InsertNewInOrder(&listOfBooks, book);
+	Node* bookList = NULL;
+	BookInfo tmpInfo = { 0 };
+	printf(MAIN_STR);
+	char control = 0;
+	while ((control = _getche()) != 8) {
+		system("cls");
+		switch (control) {
+		case'1':
+			printf("Plese enter new element in so format:\n\
+Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter),\n");
+			switch (FReadBookInfo(&tmpInfo, stdin))
+			{
+			case 0:printf("Error..."); break;
+			case 1:printf("Aprropriate format\n");
+				if (InsertNewInOrder(&bookList, tmpInfo)) {
+					printf("Adding succssful\n");
+				}
+				else {
+					printf("Fail\n");
+				}
+				break;
+			case -1:printf("Inaropriate fromat."); break;
+			}
+			break;
+		case'2':
+				printf("Crearing succsses\n");
+			}
+			else {
+				printf("Fail\n");
+			}
+			break;
+		case'3':
+		case'4':
+			system("cls");
+			printf(SORT_METHODS_STR);
+			
+			switch (_getche()) {
+			case '1':SetOrder(ByAlphabetAuthors); break;
+			case '2':SetOrder(NotByAlphabetAuthors); break;
+			case '3':SetOrder(ByAlphabetName); break;
+			case '4':SetOrder(NotByAlphabetName); break;
+			case '5':SetOrder(ByIncreasingPrice); break;
+			case '6':SetOrder(ByReducingPrice); break;
+			case '7':SetOrder(ByIncreasingYear); break;
+			case '8':SetOrder(ByReducingYear); break;
+			case '9':SetOrder(ByIncreasingPages); break;
+			case '0':SetOrder(ByReducingPages); break;
+			}
+			if (SortBooks(&bookList)){
+				printf("Sorting  succsseful\n");
+			}
+			else {
+				printf("Fail\n");
+			}
+			break;
 		}
-		if (noEnd == -1){
-			printf("Data on  row  %i has inappropriate format\n", indexRowOfFile);
-		}
-		++indexRowOfFile;
-	};
-	SortBooks(ByAlphabetAthors, &listOfBooks);
-	PrintListBooks(listOfBooks);
-	//DeleteLess50Pages(&listOfBooks);
-	//PrintListBooks(listOfBooks);
-	//BookInfo* top5LatesBooks = FindTop5Latest(listOfBooks);
-	//PrintArrayBook(top5LatesBooks, 5);
-	DeleteList(&listOfBooks);
-	//free(top5LatesBooks);
-	getchar(); getchar();
+
+
+
+	}
+
+
 	return 0;
 }

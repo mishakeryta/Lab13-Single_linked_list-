@@ -1,3 +1,6 @@
-﻿  BookList.c
+﻿  PrintListBook.c
+  Main.c
+  BookList.c
+  Создание кода...
   SingleLinkeList.vcxproj -> C:\study\2\Software Engineering\psets\SingleLinkeList\Debug\SingleLinkeList.exe
   SingleLinkeList.vcxproj -> C:\study\2\Software Engineering\psets\SingleLinkeList\Debug\SingleLinkeList.pdb (Partial PDB)
