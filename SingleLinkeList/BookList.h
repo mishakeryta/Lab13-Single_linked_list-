@@ -49,8 +49,10 @@ int ByReducingYear(const BookInfo* first, const BookInfo* second);
 int ByIncreasingPages(const BookInfo* first, const BookInfo* second);
 
 int ByReducingPages(const BookInfo* first, const BookInfo* second);
-int InsertNewListFromFile(Node**list, char*path);
+int InsertNewListFromFile(Node**list, const char*path);
 
 int SetOrder(int(*cmpModeOfSort)(const BookInfo* first, const BookInfo* second));
+
+int DeleteHead(Node** head);
 #include "PrintListBook.h"
 #endif

@@ -151,6 +151,3 @@ int IsBooksEqual(BookInfo book1, BookInfo book2)
 		book1.year != book2.year || book1.pages != book2.pages || book1.price != book2.price) return 0;
 	return 1;
 }
-
-
-

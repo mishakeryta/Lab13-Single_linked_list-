@@ -54,8 +54,7 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 					printf("Fail\n");
 				}
 				break;
-			case -1:printf("Inaropriate fromat\n"); break;
-			case -2:printf("Element is in the list\n"); break;
+			case -1:printf("Inaprropriate fromat\n"); break;
 			}
 			break;
 		case'2':
@@ -89,6 +88,7 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 			case '8':SetOrder(ByReducingYear); break;
 			case '9':SetOrder(ByIncreasingPages); break;
 			case '0':SetOrder(ByReducingPages); break;
+			default:system("cls"); break;
 			}
 			if (SortBooks(&bookList)) {
 				printf("Sorting  sucsseful\n");

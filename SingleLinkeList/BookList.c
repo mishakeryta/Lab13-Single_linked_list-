@@ -8,7 +8,7 @@ static int(*CmpModeOfSort)(const BookInfo* first, const BookInfo* second) = NotB
 int SetOrder(int(*cmpModeOfSort)(const BookInfo* first, const BookInfo* second))
 {
 	if (!cmpModeOfSort) return 0;
-	CmpModeOfSort = CmpModeOfSort;
+	CmpModeOfSort = cmpModeOfSort;
 	return 1;
 }
 //створю новий елемент, у динамічній пам'яті
@@ -31,8 +31,9 @@ int InsertToBegin(Node** list, Node* node) {
 
 //провіпряє чи така книга уже є в  списку
 int IsBookInList(const Node* list, BookInfo info) {
-	while (list){
+	while (list) {
 		if (IsBooksEqual(list->info, info)) return 1;
+		list = list->next;
 	}
 	return 0;
 }
@@ -40,8 +41,7 @@ int IsBookInList(const Node* list, BookInfo info) {
 //вставляє data ,пред тим створивши елемент списку,у правильне місце(проти алфавіту);
 int InsertNewInOrder(Node** list, BookInfo info) {
 	if (!list) return 0;
-	//якщо в списку є такий елемент то повернути -2;
-	if (IsBookInList(*list, info)) return 0;
+	if (IsBookInList(*list, info)) return -1;
 	//створює елемент списку
 	Node* newNode = CreateNew(info);
 	//якщо список пустий , або новий елемент стоїть пізніше з алфавітом ніж перший 
@@ -119,7 +119,6 @@ int SortBooks(Node** list) {
 		}
 		crawler = *list;
 		for (int j = 0; j < numberOfNodes - i - 2; ++j) {
-
 			if (CmpModeOfSort(&crawler->next->info, &crawler->next->next->info)) {
 				SwapFirstAndNext(&crawler->next);
 			}
@@ -140,6 +139,13 @@ Node* GetNode(Node* list, int index) {
 	return list;
 }
 
+//функція яка видаляє переданий елемент, але нічоно не робить з вказівником попереднього
+int DeleteHead(Node** head) {
+	Node* tmp = *head;
+	*head = (*head)->next;
+	free(tmp);
+}
+
 //Функція видаляє зі списку всі книги які мають  менше за 50 сторінок 
 int DeleteLess50Pages(Node **booksNode)
 {
@@ -147,20 +153,15 @@ int DeleteLess50Pages(Node **booksNode)
 		return 0;
 	}
 	Node *tmp = *booksNode;
-	while ((*booksNode)->info.pages <= 50 && *booksNode) {
-		tmp = *booksNode;
-		*booksNode = (*booksNode)->next;
-		free(tmp);
+	while (*booksNode && (*booksNode)->info.pages <= 50) {
+		DeleteHead(booksNode);
 	}
-	Node *bookCrawler = (*booksNode) ? (*booksNode)->next : (*booksNode);
-	while (bookCrawler) {
-		if (bookCrawler->info.pages <= 50) {
-			tmp->next = bookCrawler->next;
-			free(bookCrawler);
-			bookCrawler = tmp;
+	if (!*booksNode || !(*booksNode)->next) return 1;
+	Node* bookCrawler = *booksNode;
+	while (bookCrawler->next) {
+		if (bookCrawler->next->info.pages <= 50) {
+			DeleteHead(&bookCrawler->next);
 		}
-		tmp = bookCrawler;
-		bookCrawler = bookCrawler->next;
 	}
 	return 1;
 }
@@ -212,9 +213,8 @@ int DeleteList(Node **list) {
 	}
 	return 1;
 }
-
 //створити новий список з файлу
-int InsertNewListFromFile(Node** list, char* path) {
+int InsertNewListFromFile(Node** list, const char* path) {
 	if (!list || !path) return 0;
 	BookInfo book = { 0 };
 	FILE* inptr = fopen(path, "r");
@@ -226,17 +226,31 @@ int InsertNewListFromFile(Node** list, char* path) {
 	int indexRowOfFile = 1;
 	while (noEnd = FReadBookInfo(&book, inptr)) {
 		if (noEnd == 1) {
-			if ( !InsertNewInOrder(list, book)) return 0;
+			switch (InsertNewInOrder(list, book))
+			{
+			case 0: { fclose(inptr); return 0; }
+			case -1: printf("Element on row %i is allready in the list\n" ,indexRowOfFile); break;
+			}
 		}
 		if (noEnd == -1) {
-			printf("Element on  row  %i has inappropriate format or is allready in the list\n", indexRowOfFile);
-		}
-		if (noEnd == -2) {
-			printf("Element on row %i is in the list\n",indexRowOfFile);
+			printf("Element on  row  %i has inappropriate format \n", indexRowOfFile);
 		}
 		++indexRowOfFile;
-		
 	};
-	fclose(inptr);
+
 	return 1;
+}
+
+int DeleteBooks(Node** list, int index) {
+	if (!list || !*list || index < 0) return 0;
+	Node* tmp;
+	if (index == 0) {
+		tmp = *list;
+		*list = (*list)->next;
+		free(tmp);
+		return 1;
+	}
+	for (int i = 0; i < index; ++i) {
+
+	}
 }
