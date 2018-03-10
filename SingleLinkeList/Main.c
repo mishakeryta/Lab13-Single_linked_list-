@@ -10,8 +10,8 @@
 #define MAIN_STR "<<BookInfo>>\n\
 Plese eter button:\n\
 1-Add new(format:Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter),\n\
-2-Add from book.txt\n\
-3-Save changes to book.txt\n\
+2-Add from Books.txt\n\
+3-Save changes to Books.txt\n\
 4-Sort\n\
 5-Show\n\
 6-Find5Latest\n\
@@ -35,38 +35,48 @@ int main(void) {
 	BookInfo tmpInfo = { 0 };
 	printf(MAIN_STR);
 	char control = 0;
+	BookInfo* top5Latest = NULL;
 	while ((control = _getche()) != 8) {
 		system("cls");
-		switch (control) {
+		switch (control)
+		{
 		case'1':
 			printf("Plese enter new element in so format:\n\
 Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter),\n");
 			switch (FReadBookInfo(&tmpInfo, stdin))
 			{
-			case 0:printf("Error..."); break;
+			case 0:printf("Fail\n"); break;
 			case 1:printf("Aprropriate format\n");
 				if (InsertNewInOrder(&bookList, tmpInfo)) {
-					printf("Adding succssful\n");
+					printf("Adding successful\n");
 				}
 				else {
 					printf("Fail\n");
 				}
 				break;
-			case -1:printf("Inaropriate fromat."); break;
+			case -1:printf("Inaropriate fromat\n"); break;
 			}
 			break;
 		case'2':
-				printf("Crearing succsses\n");
+			if (InsertNewListFromFile(&bookList, "Books.txt")) {
+				printf("Creating sucsseful\n");
 			}
 			else {
 				printf("Fail\n");
 			}
 			break;
 		case'3':
+			if (FPrintListBooks(bookList, "Books.txt")) {
+				printf("Saving sucssesful\n");
+			}
+			else {
+				printf("Fail\n");
+			}
+			break;
 		case'4':
 			system("cls");
 			printf(SORT_METHODS_STR);
-			
+
 			switch (_getche()) {
 			case '1':SetOrder(ByAlphabetAuthors); break;
 			case '2':SetOrder(NotByAlphabetAuthors); break;
@@ -79,19 +89,31 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 			case '9':SetOrder(ByIncreasingPages); break;
 			case '0':SetOrder(ByReducingPages); break;
 			}
-			if (SortBooks(&bookList)){
-				printf("Sorting  succsseful\n");
+			if (SortBooks(&bookList)) {
+				printf("Sorting  sucsseful\n");
 			}
 			else {
 				printf("Fail\n");
 			}
 			break;
+		case '5':PrintListBooks(bookList);
+			printf("Printing sucsseful\n");
+			break;
+		case '6':
+			if (top5Latest = FindTop5Latest(bookList)) {
+				printf("Finding top 5 latest sucssesful\n");
+				PrintArrayBooks(top5Latest, 5);
+			}
+			else {
+				printf("Fail\n");
+			}
 		}
-
-
-
+		break;
+		case '7':
+			DeleteList(&bookList);
+			break;
+		printf(MAIN_STR);
 	}
-
 
 	return 0;
 }

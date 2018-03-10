@@ -6,5 +6,6 @@
 void PrintTemplate(void);
 void PrintBookInfo(BookInfo data);
 void PrintListBooks(const Node* booksNode);
-void PrintArrayBook(const BookInfo* arrBooksInfo, int num);
+int FPrintListBooks(const Node* list, const char* path);
+void PrintArrayBooks(const BookInfo* arrBooksInfo, int num);
 #endif

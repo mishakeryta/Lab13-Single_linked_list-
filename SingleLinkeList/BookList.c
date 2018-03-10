@@ -1,8 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+
 
 #include "BookList.h"
 //режим встаки та сортування книг
@@ -208,11 +205,11 @@ int DeleteList(Node **list) {
 
 //створити новий список з файлу
 int InsertNewListFromFile(Node** list, char* path) {
-	if (!list || path) return 0;
+	if (!list || !path) return 0;
 	BookInfo book = { 0 };
 	FILE* inptr = fopen(path, "r");
 	if (!inptr) {
-		printf("Wrong path.");
+		printf("Wrong path\n");
 		return 0;
 	}
 	int noEnd = 0;

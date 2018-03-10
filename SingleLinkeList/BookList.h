@@ -1,7 +1,10 @@
 #ifndef BOOK_LIST_HEADER
 #define BOOK_LIST_HEADER
 
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 #include "BookInfo.h"
 typedef struct SNode
@@ -25,7 +28,7 @@ int DeleteList(Node** list);
 Node* GetNode(Node* list, int index);
 
 //сортує книги за заданою умовою, повертає один, якщо все вдалося
-int SortBooks( Node** list);
+int SortBooks(Node** list);
 
 //умови(способи) сортування
 int ByAlphabetAuthors(const BookInfo* first, const BookInfo* second);
@@ -47,7 +50,6 @@ int ByIncreasingPages(const BookInfo* first, const BookInfo* second);
 
 int ByReducingPages(const BookInfo* first, const BookInfo* second);
 int InsertNewListFromFile(Node**list, char*path);
-
 
 int SetOrder(int(*cmpModeOfSort)(const BookInfo* first, const BookInfo* second));
 #include "PrintListBook.h"

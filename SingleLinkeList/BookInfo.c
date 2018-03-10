@@ -1,5 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "BookInfo.h"
-
 //провіряє чи символ може міститися у імені автора
 int IsAuthorChar(int chr) {
 	return isalpha(chr) || isblank(chr) || chr == '-';
@@ -140,4 +140,11 @@ int FReadBookInfo(BookInfo* info, FILE* inptr) {
 
 	return 1;
 }
+int FPrintBookInfo(BookInfo info, FILE* outptr) {
+	if (!outptr) return 0;
+	fprintf(outptr, "%s|%s|%i|%i|%lf\n", info.author, info.name, info.year, info.pages, info.price);
+	return 1;
+}
+
+
 
