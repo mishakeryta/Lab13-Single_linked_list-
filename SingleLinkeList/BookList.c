@@ -12,68 +12,67 @@ int SetOrder(int(*cmpModeOfSort)(const BookInfo* first, const BookInfo* second))
 	return 1;
 }
 //створю новий елемент, у динамічній пам'яті
-Node* CreateNew(BookInfo data) {
-	Node* newElement = (Node*)malloc(sizeof(Node));
-	newElement->info = data;
-	newElement->next = NULL;
+Snode* CreateNew(BookInfo data) {
+	Snode* newElement = (Snode*)malloc(sizeof(Snode));
+	newElement->m_info = data;
+	newElement->m_pNext = NULL;
 	return newElement;
 }
 
 //вставляє елемен на місце першого елемента list
-int InsertToBegin(Node** list, Node* node) {
+int InsertToBegin(Snode** list, Snode* node) {
 	if (!list) return 0;
 	//наступни нового, вказує на почаок списку
-	node->next = *list;
+	node->m_pNext = *list;
 	//вказівник голови списку вказує на нового
 	(*list) = node;
 	return 1;
 }
 
 //провіпряє чи така книга уже є в  списку
-int IsBookInList(const Node* list, BookInfo info) {
+int IsBookInList(const Snode* list, BookInfo info) {
 	while (list) {
-		if (IsBooksEqual(list->info, info)) return 1;
-		list = list->next;
+		if (IsBooksEqual(list->m_info, info)) return 1;
+		list = list->m_pNext;
 	}
 	return 0;
 }
-
 //вставляє data ,пред тим створивши елемент списку,у правильне місце(проти алфавіту);
-int InsertNewInOrder(Node** list, BookInfo info) {
+int InsertNewInOrder(Snode** list, BookInfo info) {
 	if (!list) return 0;
 	if (IsBookInList(*list, info)) return -1;
 	//створює елемент списку
-	Node* newNode = CreateNew(info);
+	Snode* newNode = CreateNew(info);
 	//якщо список пустий , або новий елемент стоїть пізніше з алфавітом ніж перший 
-	if (!*list || CmpModeOfSort(&(*list)->info, &newNode->info)) {
+	if (!*list || CmpModeOfSort(&(*list)->m_info, &newNode->m_info)) {
 		//вставити на початок списку
 		InsertToBegin(list, newNode);
 		return 1;
 	}
 	//повзун який пробігає по списку
-	Node* crawler = *list;
+	Snode* crawler = *list;
 	//поки є наступни, і цей наступний пізніше, то ...
-	while (crawler->next && !CmpModeOfSort(&crawler->next->info, &newNode->info)) {
+	while (crawler->m_pNext && !CmpModeOfSort(&crawler->m_pNext->m_info, &newNode->m_info)) {
 		//йти далі
-		crawler = crawler->next;
+		crawler = crawler->m_pNext;
 	}
 	//якщо кінець то новий встановлюється туди
-	if (!crawler->next) {
-		crawler->next = newNode;
+	if (!crawler->m_pNext) {
+		crawler->m_pNext = newNode;
 	}
 	else {
 		//інакше вставити замість останього
-		InsertToBegin(&crawler->next, newNode);
+		InsertToBegin(&crawler->m_pNext, newNode);
 	}
 	return 1;
 }
 
 //функція яка міняє містями перший з наступним, але не міняє вказівник попереднього
-int SwapFirstAndNext(Node** head) {
-	if (!head || !(*head) || !(*head)->next) return 0;
-	Node* tmp = (*head)->next;
-	(*head)->next = tmp->next;
-	tmp->next = *head;
+int SwapFirstAndNext(Snode** head) {
+	if (!head || !(*head) || !(*head)->m_pNext) return 0;
+	Snode* tmp = (*head)->m_pNext;
+	(*head)->m_pNext = tmp->m_pNext;
+	tmp->m_pNext = *head;
 	*head = tmp;
 	return 1;
 }
@@ -110,72 +109,72 @@ int ByReducingPages(const BookInfo* first, const BookInfo* second) {
 }
 
 //саме сортування.За основу береться алгоритм  бульбашки
-int SortBooks(Node** list) {
-	if (!list || !*list || !(*list)->next) return 0;
-	Node* crawler = 0;
+int SortBooks(Snode** list) {
+	if (!list || !*list || !(*list)->m_pNext) return 0;
+	Snode* crawler = 0;
 	for (int i = 0, numberOfNodes = CountNodes(*list); i < numberOfNodes - 1; ++i) {
-		if (CmpModeOfSort(&(*list)->info, &(*list)->next->info)) {
+		if (CmpModeOfSort(&(*list)->m_info, &(*list)->m_pNext->m_info)) {
 			SwapFirstAndNext(list);
 		}
 		crawler = *list;
 		for (int j = 0; j < numberOfNodes - i - 2; ++j) {
-			if (CmpModeOfSort(&crawler->next->info, &crawler->next->next->info)) {
-				SwapFirstAndNext(&crawler->next);
+			if (CmpModeOfSort(&crawler->m_pNext->m_info, &crawler->m_pNext->m_pNext->m_info)) {
+				SwapFirstAndNext(&crawler->m_pNext);
 			}
-			crawler = crawler->next;
+			crawler = crawler->m_pNext;
 		}
 	}
 	return 1;
 }
 
 //функція ,яка повертає вузол , який знаходиться на позиції index 
-Node* GetNode(Node* list, int index) {
+Snode* GetNode(Snode* list, int index) {
 	int i = 0;
 	while (list) {
 		if (i == index) break;
 		++i;
-		list = list->next;
+		list = list->m_pNext;
 	}
 	return list;
 }
 
 //функція яка видаляє переданий елемент, але нічоно не робить з вказівником попереднього
-int DeleteHead(Node** head) {
-	Node* tmp = *head;
-	*head = (*head)->next;
+int DeleteHead(Snode** head) {
+	Snode* tmp = *head;
+	*head = (*head)->m_pNext;
 	free(tmp);
 }
 
 //Функція видаляє зі списку всі книги які мають  менше за 50 сторінок 
-int DeleteLess50Pages(Node **booksNode)
+int DeleteLess50Pages(Snode **booksNode)
 {
 	if (!(*booksNode)) {
 		return 0;
 	}
-	Node *tmp = *booksNode;
-	while (*booksNode && (*booksNode)->info.pages <= 50) {
+	Snode *tmp = *booksNode;
+	while (*booksNode && (*booksNode)->m_info.pages <= 50) {
 		DeleteHead(booksNode);
 	}
-	if (!*booksNode || !(*booksNode)->next) return 1;
-	Node* bookCrawler = *booksNode;
-	while (bookCrawler->next) {
-		if (bookCrawler->next->info.pages <= 50) {
-			DeleteHead(&bookCrawler->next);
+	if (!*booksNode || !(*booksNode)->m_pNext) return 1;
+	Snode* bookCrawler = *booksNode;
+	while (bookCrawler->m_pNext) {
+		if (bookCrawler->m_pNext->m_info.pages <= 50) {
+			DeleteHead(&bookCrawler->m_pNext);
 		}
 	}
 	return 1;
 }
 //рахує кількість вузлів у списку
-int CountNodes(const Node* list) {
+int CountNodes(const Snode* list) {
 	int count = 0;
 	while (list) {
-		list = list->next;
+		list = list->m_pNext;
 		++count;
 	}
 	return count;
 }
 //створю масив що містить 5 найновіших книг
-BookInfo* FindTop5Latest(const Node* list) {
+BookInfo* FindTop5Latest(const Snode* list) {
 	if (!list) return NULL;
 	int countOfElements = CountNodes(list);
 	if (countOfElements < 5)return NULL;
@@ -183,19 +182,19 @@ BookInfo* FindTop5Latest(const Node* list) {
 	BookInfo* top5Latest = (BookInfo*)calloc(5, sizeof(BookInfo));
 	for (int i = 0; i < 5; ++i)
 	{
-		BookInfo tmp = list->info;
-		const Node* crawler = list;
+		BookInfo tmp = list->m_info;
+		const Snode* crawler = list;
 		int numOfNode = 0;
 		int goingInNode = 0;
 		while (crawler)
 		{
-			if (crawler->info.year >= tmp.year && !isInNodeWithNum[numOfNode])
+			if (crawler->m_info.year >= tmp.year && !isInNodeWithNum[numOfNode])
 			{
-				tmp = crawler->info;
+				tmp = crawler->m_info;
 				goingInNode = numOfNode;
 			}
 			++numOfNode;
-			crawler = crawler->next;
+			crawler = crawler->m_pNext;
 		}
 		top5Latest[i] = tmp;
 		isInNodeWithNum[goingInNode] = 1;
@@ -203,18 +202,18 @@ BookInfo* FindTop5Latest(const Node* list) {
 	return top5Latest;
 }
 //видаляє список
-int DeleteList(Node **list) {
+int DeleteList(Snode **list) {
 	if (!list) return 0;
-	Node* tmp = NULL;
+	Snode* tmp = NULL;
 	while (*list) {
 		tmp = *list;
-		*list = (*list)->next;
+		*list = (*list)->m_pNext;
 		free(tmp);
 	}
 	return 1;
 }
 //створити новий список з файлу
-int InsertNewListFromFile(Node** list, const char* path) {
+int InsertNewListFromFile(Snode** list, const char* path) {
 	if (!list || !path) return 0;
 	BookInfo book = { 0 };
 	FILE* inptr = fopen(path, "r");
@@ -229,10 +228,10 @@ int InsertNewListFromFile(Node** list, const char* path) {
 			switch (InsertNewInOrder(list, book))
 			{
 			case 0: { fclose(inptr); return 0; }
-			case -1: printf("Element on row %i is allready in the list\n" ,indexRowOfFile); break;
+			case -1: printf("Element on row %i is allready in the list\n", indexRowOfFile); break;
 			}
 		}
-		if (noEnd == -1) {
+		else {
 			printf("Element on  row  %i has inappropriate format \n", indexRowOfFile);
 		}
 		++indexRowOfFile;
@@ -240,13 +239,12 @@ int InsertNewListFromFile(Node** list, const char* path) {
 
 	return 1;
 }
-
-int DeleteBooks(Node** list, int index) {
+int DeleteBooks(Snode** list, int index) {
 	if (!list || !*list || index < 0) return 0;
-	Node* tmp;
+	Snode* tmp;
 	if (index == 0) {
 		tmp = *list;
-		*list = (*list)->next;
+		*list = (*list)->m_pNext;
 		free(tmp);
 		return 1;
 	}

@@ -31,7 +31,7 @@ Plese eter button:\n\
 Any - return|\n"
 
 int main(void) {
-	Node* bookList = NULL;
+	Snode* bookList = NULL;
 	BookInfo tmpInfo = { 0 };
 	printf(MAIN_STR);
 	char control = 0;
@@ -66,7 +66,7 @@ Author(max length 70)|Name (max length 70)|year|num of pages| price (press enter
 			}
 			break;
 		case'3':
-			if (FPrintListBooks(bookList, "Books.txt")) {
+			if (PrintListBooksToFile(bookList, "Books.txt")) {
 				printf("Saving sucssesful\n");
 			}
 			else {

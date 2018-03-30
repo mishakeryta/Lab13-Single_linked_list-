@@ -31,7 +31,7 @@ void PrintBookInfo(BookInfo data) {
 	printf("%*i|", 5, data.pages);
 	printf("%*.2lf|\n", 6, data.price);
 }
-void PrintListBooks(const Node* booksNode) {
+void PrintListBooks(const Snode* booksNode) {
 	if (!booksNode) {
 		return;
 	}
@@ -39,9 +39,9 @@ void PrintListBooks(const Node* booksNode) {
 	PrintTemplate();
 	PrintRows(5, 27, 25, 6, 5, 6);
 	do {
-		PrintBookInfo(booksNode->info);
+		PrintBookInfo(booksNode->m_info);
 		PrintRows(5, 27, 25, 6, 5, 6);
-		booksNode = booksNode->next;
+		booksNode = booksNode->m_pNext;
 	} while (booksNode);
 }
 void PrintArrayBooks(const BookInfo* arrBooksInfo, int num) {
@@ -58,7 +58,7 @@ void PrintArrayBooks(const BookInfo* arrBooksInfo, int num) {
 }
 //вставляє вміст списку у файл(звісно вміст зюерігається у відповідному форматі)
 //попередній вміст файлу стирається
-int FPrintListBooks(const Node* list, const char* path) {
+int PrintListBooksToFile(const Snode* list, const char* path) {
 	if (!path) return 0;
 	//стираємо попередній вміст файлу
 	FILE*  outptr = fopen(path, "w");
@@ -66,8 +66,8 @@ int FPrintListBooks(const Node* list, const char* path) {
 	fclose(outptr);
 	outptr = fopen(path, "a");
 	while (list) {
-		FPrintBookInfo(list->info, outptr);
-		list = list->next;
+		FPrintBookInfo(list->m_info, outptr);
+		list = list->m_pNext;
 	}
 	fclose(outptr);
 	return 1;
