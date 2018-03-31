@@ -1,149 +1,135 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "BookList.h"
-Snode* CreateNew(TbookInfo data) {
-	Snode* newElement = (Snode*)malloc(sizeof(Snode));
-	newElement->m_info = data;
-	newElement->m_pNext = NULL;
-	return newElement;
+
+//--------------------------------------------------------------------------------
+Tnode* CreateNew(TbookInfo info) {
+	Tnode* pNewNode = (Tnode*)malloc(sizeof(Tnode));
+	pNewNode->m_info = info;
+	pNewNode->m_pNext = NULL;
+	return pNewNode;
 }
-int InsertToBegin(Snode** list, Snode* node) {
-	if (!list) return 0;
-	node->m_pNext = *list;
-	(*list) = node;
+//--------------------------------------------------------------------------------
+int InsertToBegin(Tnode** ppList, Tnode* pNode) {
+	if (!ppList || !pNode) return 0;
+	pNode->m_pNext = *ppList;
+	(*ppList) = pNode;
 	return 1;
 }
-int IsBookInList(const Snode* list, TbookInfo info) {
-	while (list) {
-		if (IsBooksEqual(list->m_info, info)) return 1;
-		list = list->m_pNext;
-	}
-	return 0;
-}
-int InsertNewInOrder(Snode** list, TbookInfo data) {
-	if (!list) return 0;
-	Snode* newNode = CreateNew(data);
-	if (!(*list)) {
-		*list = newNode;
+//--------------------------------------------------------------------------------
+int InsertNewInOrder(Tnode** ppList, TbookInfo info) {
+	if (!ppList) return 0;
+	Tnode* pNewNode = CreateNew(info);
+	if (!(*ppList)) {
+		*ppList = pNewNode;
 		return 1;
 	}
-	if (strcmp((*list)->m_info.author, newNode->m_info.author) <= 0) {
-		InsertToBegin(list, newNode);
+	if (strcmp((*ppList)->m_info.m_szAuthor, pNewNode->m_info.m_szAuthor) <= 0) {
+		InsertToBegin(ppList, pNewNode);
 		return 1;
 	}
-	Snode* crawler = *list;
-	while (crawler->m_pNext && strcmp(crawler->m_pNext->m_info.author, newNode->m_info.author) >= 0) {
-		crawler = crawler->m_pNext;
+	Tnode* pCrawlerForList = *ppList;
+	while (pCrawlerForList->m_pNext &&
+		strcmp(pCrawlerForList->m_pNext->m_info.m_szAuthor,
+			pNewNode->m_info.m_szAuthor) >= 0) {
+		pCrawlerForList = pCrawlerForList->m_pNext;
 	}
-	if (!crawler->m_pNext) {
-		crawler->m_pNext = newNode;
+	if (!pCrawlerForList->m_pNext) {
+		pCrawlerForList->m_pNext = pNewNode;
 	}
 	else {
-		InsertToBegin(&crawler->m_pNext, newNode);
+		InsertToBegin(&pCrawlerForList->m_pNext, pNewNode);
 	}
 	return 1;
 }
-//функція яка видаляє переданий елемент, але нічоно не робить з вказівником попереднього
-int DeleteHead(Snode** head) {
-	Snode* pTmp = *head;
-	*head = (*head)->m_pNext;
-	free(pTmp);
-}
-//Функція видаляє зі списку всі книги які мають  менше за 50 сторінок 
-int DeleteLess50Pages(Snode **booksNode) {
-	if (!(*booksNode)) {
+//--------------------------------------------------------------------------------
+int DeleteHead(Tnode** ppList) {
+	if (!ppList || !*ppList) {
 		return 0;
 	}
-	Snode *tmp = *booksNode;
-	while (*booksNode && (*booksNode)->m_info.pages <= 50) {
-		DeleteHead(booksNode);
+	Tnode* pTmpForDeletingNode = *ppList;
+	*ppList = (*ppList)->m_pNext;
+	free(pTmpForDeletingNode);
+	return 1;
+}
+//--------------------------------------------------------------------------------
+int DeleteLess50Pages(Tnode **ppList) {
+	if (!ppList || !(*ppList)) {
+		return 0;
 	}
-	if (!*booksNode || !(*booksNode)->m_pNext) return 1;
-	Snode* bookCrawler = *booksNode;
-	while (bookCrawler->m_pNext) {
-		if (bookCrawler->m_pNext->m_info.pages <= 50) {
-			DeleteHead(&bookCrawler->m_pNext);
-		}else {
-			bookCrawler = bookCrawler->m_pNext;
+	Tnode *tmp = *ppList;
+	while (*ppList && (*ppList)->m_info.m_nPages <= 50) {
+		DeleteHead(ppList);
+	}
+	if (!*ppList || !(*ppList)->m_pNext) return 1;
+	Tnode* pCrawlerForList = *ppList;
+	while (pCrawlerForList->m_pNext) {
+		if (pCrawlerForList->m_pNext->m_info.m_nPages <= 50) {
+			DeleteHead(&pCrawlerForList->m_pNext);
+		}
+		else {
+			pCrawlerForList = pCrawlerForList->m_pNext;
 		}
 	}
 	return 1;
 }
-
-//створю масив що містить 5 найновіших книг
-TbookInfo* FindTop5Latest(const Snode* list) {
-	if (!list) return NULL;
-	int countOfElements = CountNodes(list);
-	if (countOfElements < 5)return NULL;
-	char* isInNodeWithNum = (char*)calloc(countOfElements, sizeof(char));
-	TbookInfo* top5Latest = (TbookInfo*)calloc(5, sizeof(TbookInfo));
-	for (int i = 0; i < 5; ++i)
-	{
-		TbookInfo tmp = list->m_info;
-		const Snode* crawler = list;
-		int numOfNode = 0;
-		int goingInNode = 0;
-		while (crawler)
-		{
-			if (crawler->m_info.year >= tmp.year && !isInNodeWithNum[numOfNode])
-			{
-				tmp = crawler->m_info;
-				goingInNode = numOfNode;
+//--------------------------------------------------------------------------------
+TbookInfo* FindTop5Latest(const Tnode* pList) {
+	if (!pList) return NULL;
+	int nCountOfElements = CountNodes(pList);
+	if (nCountOfElements < 5)return NULL;
+	char* pchIsInNodeWithNum = (char*)calloc(nCountOfElements, sizeof(char));
+	TbookInfo* pTop5LatestInfo = (TbookInfo*)calloc(5, sizeof(TbookInfo));
+	for (int i = 0; i < 5; ++i) {
+		TbookInfo tmp = pList->m_info;
+		const Tnode* pCrawlerForList = pList;
+		int nNumOfNode = 0;
+		int nGoingInNode = 0;
+		while (pCrawlerForList) {
+			if (pCrawlerForList->m_info.m_nYear >= tmp.m_nYear &&
+				!pchIsInNodeWithNum[nNumOfNode]) {
+				tmp = pCrawlerForList->m_info;
+				nGoingInNode = nNumOfNode;
 			}
-			++numOfNode;
-			crawler = crawler->m_pNext;
+			++nNumOfNode;
+			pCrawlerForList = pCrawlerForList->m_pNext;
 		}
-		top5Latest[i] = tmp;
-		isInNodeWithNum[goingInNode] = 1;
+		pTop5LatestInfo[i] = tmp;
+		pchIsInNodeWithNum[nGoingInNode] = 1;
 	}
-	return top5Latest;
+	return pTop5LatestInfo;
 }
-//видаляє список
-int DeleteList(Snode **list) {
-	if (!list) return 0;
-	Snode* tmp = NULL;
-	while (*list) {
-		tmp = *list;
-		*list = (*list)->m_pNext;
-		free(tmp);
+//--------------------------------------------------------------------------------
+int DeleteList(Tnode **ppList) {
+	if (!ppList) return 0;
+	Tnode* pTmpForDeletingNode = NULL;
+	while (*ppList) {
+		pTmpForDeletingNode = *ppList;
+		*ppList = (*ppList)->m_pNext;
+		free(pTmpForDeletingNode);
 	}
 	return 1;
 }
-//створити новий список з файлу
-void PrintListBooks(const Snode* booksNode) {
-	if (!booksNode) {
+//--------------------------------------------------------------------------------
+void PrintListBooks(const Tnode* pList) {
+	if (!pList) {
 		return;
 	}
-	PrintRows(5, 27, 25, 6, 5, 6);
+	PRINT_ROW_FOR_BOOK_TABLE();
 	PrintTemplate();
-	PrintRows(5, 27, 25, 6, 5, 6);
+	PRINT_ROW_FOR_BOOK_TABLE();
 	do {
-		PrintBook(booksNode->m_info);
-		PrintRows(5, 27, 25, 6, 5, 6);
-		booksNode = booksNode->m_pNext;
-	} while (booksNode);
+		PrintBook(pList->m_info);
+		PRINT_ROW_FOR_BOOK_TABLE();
+		pList = pList->m_pNext;
+	} while (pList);
 }
-
-//вставляє вміст списку у файл(звісно вміст зюерігається у відповідному форматі)
-//попередній вміст файлу стирається
-int PrintListBooksToFile(const Snode* list, const char* path) {
-	if (!path) return 0;
-	//стираємо попередній вміст файлу
-	FILE*  outptr = fopen(path, "w");
-	if (!outptr)  return 0;
-	fclose(outptr);
-	outptr = fopen(path, "a");
-	while (list) {
-		PrintBookToFile(list->m_info, outptr);
-		list = list->m_pNext;
-	}
-	fclose(outptr);
-	return 1;
-}
-int CountNodes(const Snode* psList) {
+//--------------------------------------------------------------------------------
+int CountNodes(const Tnode* pList) {
 	int nCount = 0;
-	while (psList) {
-		psList = psList->m_pNext;
+	while (pList) {
+		pList = pList->m_pNext;
 		++nCount;
 	}
 	return nCount;
 }
+//--------------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 int main(void) {
 
 	//сам список
-	Snode* pList = NULL;
+	Tnode* pList = NULL;
 
 	//тимчасово зберігає дані зчитані з файлу Books.txt
 	TbookInfo bookInfoTmp = { 0 };

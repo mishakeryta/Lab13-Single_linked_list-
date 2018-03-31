@@ -1,9 +1,2 @@
-﻿  Main.c
-  BookList.c
-  BookInfo.c
-c:\study\2\software engineering\psets\singlelinkelist\singlelinkelist\bookinfo.c(8): warning C4005: PRINT_ROW_FOR_BOOKTABLE: изменение макроопределения
-  c:\study\2\software engineering\psets\singlelinkelist\singlelinkelist\bookinfo.h(34): note: см. предыдущее определение "PRINT_ROW_FOR_BOOKTABLE"
-  Создание кода...
-c:\study\2\software engineering\psets\singlelinkelist\singlelinkelist\booklist.c(50): warning C4716: DeleteHead: должна возвращать значение
-  SingleLinkeList.vcxproj -> C:\study\2\Software Engineering\psets\SingleLinkeList\Debug\SingleLinkeList.exe
+﻿  SingleLinkeList.vcxproj -> C:\study\2\Software Engineering\psets\SingleLinkeList\Debug\SingleLinkeList.exe
   SingleLinkeList.vcxproj -> C:\study\2\Software Engineering\psets\SingleLinkeList\Debug\SingleLinkeList.pdb (Partial PDB)

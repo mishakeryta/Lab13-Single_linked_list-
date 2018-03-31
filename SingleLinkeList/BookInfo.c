@@ -1,21 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "BookInfo.h"
-#define PRINT_ROW_FOR_BOOKTABLE() PrintRows(NUM_OF_COLS\
+#define PRINT_ROW_FOR_BOOK_TABLE() PrintRows(NUM_OF_COLS\
 ,SIZE_OF_COL_WITH_NAMES\
 ,SIZE_OF_COL_WITH_NAMES\
 ,SIZE_OF_COL_WITH_NUMBERS\
 ,SIZE_OF_COL_WITH_NUMBERS\
 ,SIZE_OF_COL_WITH_NUMBERS)
 //--------------------------------------------------------------------------------
-//Виводить рядок у форматі
-//+-----+-----+----+\n(прехід на новий рядок)
-//Де кількість проміжків між '+' дорівнює nNum
-//А всі наступні аргументи ,кількість яких дорівнює nNum,позначають відстані
-//між цими плюсами.
-//Приклад:
-//PrintRows(3,2,2,3);
-//Вивід на екран(консоль):
-//+--+--+---+\n(прехід на новий рядок)
 void PrintRows(int nNum, ...) {
 	putchar('+');
 	va_list listOfParams;
@@ -160,16 +151,16 @@ int ReadBookInfoFromFile(TbookInfo* info, FILE* pfInput) {
 	//змінна, яка зберігає позицію в буфері
 	int nIndexOfBuffer = 0;
 	//копіювання з буферу імені автора, якщо щось пішло не так, повернути -1, що означає помилку форматування
-	if (!(nIndexOfBuffer = GetStrTo(info->author, SIZE_NAMES, '|', IsAuthorChar, szBuffer))) return -1;
+	if (!(nIndexOfBuffer = GetStrTo(info->m_szAuthor, SIZE_NAMES, '|', IsAuthorChar, szBuffer))) return -1;
 	//перевірка формату імені, видалення лишніх пробілів, якщо формат не правильний, якщо щось пішло не так ...
-	if (!FormatAuthor(info->author)) return -1;
+	if (!FormatAuthor(info->m_szAuthor)) return -1;
 	//пропуск риски в буфері
 	++nIndexOfBuffer;
 
 	//добавлення  з мінної яка зберігає зміщення позиції буферу в функції
 	int nIndexLocalBuffer = 0;
 	//зчитування імені книги з буферу(теперішньої позиції),зберігання зміщення 
-	if (!(nIndexLocalBuffer = GetStrTo(info->name, SIZE_NAMES, '|', IsNameBookChar, szBuffer + nIndexOfBuffer))) return -1;
+	if (!(nIndexLocalBuffer = GetStrTo(info->m_szName, SIZE_NAMES, '|', IsNameBookChar, szBuffer + nIndexOfBuffer))) return -1;
 	//прехід на настувну позицію
 	nIndexOfBuffer += nIndexLocalBuffer + 1;
 
@@ -188,7 +179,7 @@ int ReadBookInfoFromFile(TbookInfo* info, FILE* pfInput) {
 	//перехід на нову позію 
 	nIndexOfBuffer += nIndexLocalBuffer + 1;
 	//конвертування та збереження року
-	info->year = atoi(szTmpForDigits);
+	info->m_nYear = atoi(szTmpForDigits);
 
 	//те саме  зі сторінками
 	if (!(nIndexLocalBuffer = GetStrTo(
@@ -199,8 +190,8 @@ int ReadBookInfoFromFile(TbookInfo* info, FILE* pfInput) {
 		szBuffer + nIndexOfBuffer))) return -1;
 
 	nIndexOfBuffer += nIndexLocalBuffer + 1;
-	info->pages = atoi(szTmpForDigits);
-	if (info->pages <= 0) return -1;
+	info->m_nPages = atoi(szTmpForDigits);
+	if (info->m_nPages <= 0) return -1;
 
 	if (!(nIndexLocalBuffer = GetStrTo(
 		szTmpForDigits,
@@ -211,7 +202,7 @@ int ReadBookInfoFromFile(TbookInfo* info, FILE* pfInput) {
 
 	// превірка формату ціни
 	if (!CheckPriceFormatIsTrue(szTmpForDigits)) return -1;
-	info->price = atof(szTmpForDigits);
+	info->m_dPrice = atof(szTmpForDigits);
 	return 1;
 }
 //--------------------------------------------------------------------------------
@@ -219,21 +210,21 @@ int PrintBookToFile(TbookInfo info, FILE* pfOutput) {
 	if (!pfOutput) return 0;
 	fprintf(pfOutput,
 		"%s|%s|%i|%i|%lf\n",
-		info.author,
-		info.name,
-		info.year,
-		info.pages,
-		info.price);
+		info.m_szAuthor,
+		info.m_szName,
+		info.m_nYear,
+		info.m_nPages,
+		info.m_dPrice);
 	return 1;
 }
 //--------------------------------------------------------------------------------
 int IsBooksEqual(TbookInfo info1, TbookInfo info2)
 {
-	if (strcmp(info1.author, info2.author)
-		|| strcmp(info1.name, info2.name)
-		|| info1.year != info2.year
-		|| info1.pages != info2.pages
-		|| info1.price != info2.price) return 0;
+	if (strcmp(info1.m_szAuthor, info2.m_szAuthor)
+		|| strcmp(info1.m_szName, info2.m_szName)
+		|| info1.m_nYear != info2.m_nYear
+		|| info1.m_nPages != info2.m_nPages
+		|| info1.m_dPrice != info2.m_dPrice) return 0;
 	return 1;
 }
 
@@ -242,12 +233,12 @@ void PrintArrayBooks(const TbookInfo* pInfo, int nNum) {
 	if (!pInfo) {
 		return;
 	}
-	PRINT_ROW_FOR_BOOKTABLE();
+	PRINT_ROW_FOR_BOOK_TABLE();
 	PrintTemplate();
-	PRINT_ROW_FOR_BOOKTABLE();
+	PRINT_ROW_FOR_BOOK_TABLE();
 	for (int i = 0; i < nNum; ++i) {
 		PrintBook(pInfo[i]);
-		PRINT_ROW_FOR_BOOKTABLE();
+		PRINT_ROW_FOR_BOOK_TABLE();
 
 	}
 }
@@ -261,10 +252,10 @@ void PrintTemplate(void) {
 }
 //--------------------------------------------------------------------------------
 void PrintBook(TbookInfo info) {
-	printf("|%-*s|", SIZE_OF_COL_WITH_NAMES, info.author);
-	printf("%-*s|", SIZE_OF_COL_WITH_NAMES, info.name);
-	printf("%*i|", SIZE_OF_COL_WITH_NUMBERS, info.year);
-	printf("%*i|", SIZE_OF_COL_WITH_NUMBERS, info.pages);
-	printf("%*.2lf|\n", SIZE_OF_COL_WITH_NUMBERS, info.price);
+	printf("|%-*s|", SIZE_OF_COL_WITH_NAMES, info.m_szAuthor);
+	printf("%-*s|", SIZE_OF_COL_WITH_NAMES, info.m_szName);
+	printf("%*i|", SIZE_OF_COL_WITH_NUMBERS, info.m_nYear);
+	printf("%*i|", SIZE_OF_COL_WITH_NUMBERS, info.m_nPages);
+	printf("%*.2lf|\n", SIZE_OF_COL_WITH_NUMBERS, info.m_dPrice);
 }
 //--------------------------------------------------------------------------------
