@@ -114,12 +114,10 @@
     <ClCompile Include="BookInfo.c" />
     <ClCompile Include="BookList.c" />
     <ClCompile Include="Main.c" />
-    <ClCompile Include="PrintListBook.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BookInfo.h" />
     <ClInclude Include="BookList.h" />
-    <ClInclude Include="PrintListBook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
