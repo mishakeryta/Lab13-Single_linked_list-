@@ -1,0 +1,5 @@
+﻿  BookInfo.c
+d:\study\2\software engineering\psets\pset3\program\booklist1.0.0\booklist1.0.0\bookinfo.c(8): warning C4005: 'PRINT_ROW_FOR_BOOK_TABLE': macro redefinition
+  d:\study\2\software engineering\psets\pset3\program\booklist1.0.0\booklist1.0.0\bookinfo.h(54): note: see previous definition of 'PRINT_ROW_FOR_BOOK_TABLE'
+d:\study\2\software engineering\psets\pset3\program\booklist1.0.0\booklist1.0.0\bookinfo.c(232): warning C4028: formal parameter 1 different from declaration
+  BookList1.0.0.vcxproj -> D:\Study\2\Software Engineering\psets\pset3\program\BookList1.0.0\Debug\BookList1.0.0.exe
